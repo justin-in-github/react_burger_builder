@@ -1,4 +1,4 @@
-import React, {Component} from "react"
+import React, { Component } from "react"
 import BurgerBuilder from "../../../containers/BurgerBuilder/BurgerBuilder";
 import "./BurgerIngredient.css"
 import PropTypes from "prop-types"
@@ -31,13 +31,16 @@ class BurgerIngredient extends Component {
             case ("salad"):
                 ingredient = <div className="Salad"></div>
                 break;
+            case ("veganPatty"):
+                ingredient = <div className="VeganPatty"></div>
+                break;
             default:
                 ingredient = null;
         }
-    
+
         return ingredient;
     }
-   
+
 }
 
 BurgerIngredient.propTypes = {

@@ -3,6 +3,9 @@ import BuildControls from "../../components/Burger/BuildControls/BuildControls"
 import Burger from "../../components/Burger/Burger"
 import Modal from "../../components/UI/Modal/Modal"
 import OrderSummary from "../../components/Burger/OrderSummary/OderSummary"
+import axios from "../../axios-orders"
+import Spinner from "../../components/UI/Spinner/Spinner"
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler"
 
 const INGREDIENT_PRICE = {
     salad: 0.5,
@@ -23,7 +26,8 @@ class BurgerBuilder extends Component {
         },
         totalPrice: 4,
         purchaseable: false,
-        purchasing: false
+        purchasing: false,
+        loading: false
     }
 
     purchaseCancelHandler = () => {
@@ -35,7 +39,29 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        alert("You will be directed to Check Out!")
+        this.setState({ loading: true })
+        // alert("You will be directed to Check Out!")
+        //any nodename of your choice + .json is firebase specific
+        const order = {
+            ingredients: this.state.ingredients,
+            price: this.state.totalPrice,
+            customer: {
+                name: "Justin",
+                adress: "Teststreet",
+                zipCode: "212312",
+                country: "Germany"
+            },
+            email: "test@test.com",
+            deliveryMethod: "fastest"
+        }
+
+        axios.post("/orders.json", order)
+            .then(response => {
+                this.setState({ loading: false, purchasing: false })
+            })
+            .catch(error => {
+                this.setState({ loading: false, purchasing: false })
+            })
     }
     updatePurchaseState(updatedIngredients) {
         //const sum gives us a number... if return is 0 we want the "ODER NOW"-Button to be disabled
@@ -95,14 +121,24 @@ class BurgerBuilder extends Component {
             //if it holds true it means this ingredients button should be disabled
             disabledInfo[key] = disabledInfo[key] <= 0 //salad: true, meat: false, ...
         }
+
+        //adding a spinner to checkout...
+        //first, create Spinner.js and .css, then add new state "loading: false", then show orderSummary or, if state.loading = true, change orderSummary component with Spinner component
+        //in purchaseContinueHandler add setState to true, and change back to false after getting axios response, then set state.purchasing to false, to that the modal closes
+        let orderSummary = <OrderSummary
+            ingredients={this.state.ingredients}
+            purchaseCanceled={this.purchaseCancelHandler}
+            purchaseContinued={this.purchaseContinueHandler}
+            price={this.state.totalPrice} />
+
+        if (this.state.loading) {
+            orderSummary = <Spinner />
+
+        }
         return (
             <React.Fragment>
                 <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
-                    <OrderSummary
-                        ingredients={this.state.ingredients}
-                        purchaseCanceled={this.purchaseCancelHandler}
-                        purchaseContinued={this.purchaseContinueHandler} 
-                        price={this.state.totalPrice}/>
+                    {orderSummary}
                 </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls
@@ -117,4 +153,4 @@ class BurgerBuilder extends Component {
     }
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder, axios);

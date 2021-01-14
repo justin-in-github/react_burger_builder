@@ -1,12 +1,13 @@
-import React, {Component} from "react"
+import React, { Component } from "react"
 import "./Modal.css"
 import Backdrop from "../Backdrop/Backdrop"
 
 class Modal extends Component {
     //this makes sure that the modal will only update/rerender when it is shown
     //since it wraps the OrderSummary, OrderSummary is affected by this too (that is actually our main goal)
-    shouldComponentUpdate(nextProps, nextState){
-        return nextProps.show !== this.props.show
+    shouldComponentUpdate(nextProps, nextState) {
+        //note: the 2nd part (after ||) is to rerender when children changes, so that the spinner gets rendered
+        return nextProps.show !== this.props.show || nextProps.children !== this.props.children
     }
 
     componentWillUpdate() {

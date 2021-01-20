@@ -26,6 +26,10 @@ class BurgerBuilder extends Component {
         purchasing: false
     }
 
+    componentDidMount() {
+        console.log(this.props)
+    }
+
     purchaseCancelHandler = () => {
         this.setState({ purchasing: false })
 

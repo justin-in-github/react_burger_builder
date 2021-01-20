@@ -3,7 +3,6 @@ import Logo from "../../Logo/Logo"
 import NavigationItems from "../NavigationItems/NavigationItems"
 import "./Sidedrawer.css"
 import Backdrop from "../../UI/Backdrop/Backdrop"
-import { checkPropTypes } from "prop-types"
 
 const sidedrawer = (props) => {
     let attachedClasses = ["SideDrawer", "Close"]

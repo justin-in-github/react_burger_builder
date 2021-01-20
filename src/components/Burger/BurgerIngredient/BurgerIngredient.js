@@ -1,5 +1,4 @@
 import React, { Component } from "react"
-import BurgerBuilder from "../../../containers/BurgerBuilder/BurgerBuilder";
 import "./BurgerIngredient.css"
 import PropTypes from "prop-types"
 

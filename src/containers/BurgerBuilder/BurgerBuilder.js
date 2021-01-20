@@ -43,7 +43,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        this.setState({ loading: true })
+        /* this.setState({ loading: true })
         // alert("You will be directed to Check Out!")
         //any nodename of your choice + .json is firebase specific
         const order = {
@@ -65,7 +65,22 @@ class BurgerBuilder extends Component {
             })
             .catch(error => {
                 this.setState({ loading: false, purchasing: false })
-            })
+            }) */
+
+        const queryParams = []
+
+        //PASSING INGREDIENTS TO CHECKOUT PAGE via querystring
+        //loop over ingredients, encode for querystring usage, join to a string and use "search"
+        //also push the price into queryParams to be able to access it
+        for (let i in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(i) + "=" + encodeURIComponent(this.state.ingredients[i]))
+        }
+        queryParams.push("price=" + this.state.totalPrice)
+        const queryString = queryParams.join("&")
+        this.props.history.push({
+            pathname: "/checkout",
+            search: "?" + queryString
+        })
     }
     updatePurchaseState(updatedIngredients) {
         //const sum gives us a number... if return is 0 we want the "ODER NOW"-Button to be disabled

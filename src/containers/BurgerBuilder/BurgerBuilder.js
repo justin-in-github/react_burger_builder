@@ -3,21 +3,21 @@ import BuildControls from "../../components/Burger/BuildControls/BuildControls"
 import Burger from "../../components/Burger/Burger"
 import Modal from "../../components/UI/Modal/Modal"
 import OrderSummary from "../../components/Burger/OrderSummary/OderSummary"
-import axios from "../../axios-orders"
 import Spinner from "../../components/UI/Spinner/Spinner"
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler"
 import {connect} from "react-redux"
-import * as actionTypes from "../../store/actions"
+import * as burgerBuilderActions from "../../store/actions/index"
+import axios from "../../axios-orders"
+
 
 class BurgerBuilder extends Component {
     state = {
-        purchasing: false,
-        loading: false,
-        error: false
+        purchasing: false
     }
 
     componentDidMount() {
         console.log(this.props)
+        this.props.onInitIngredients()
     }
 
     purchaseCancelHandler = () => {
@@ -60,24 +60,15 @@ class BurgerBuilder extends Component {
             disabledInfo[key] = disabledInfo[key] <= 0 //salad: true, meat: false, ...
         }
 
+        let orderSummary = null;
+        let burger = this.props.error ? <p>Ingredients can't be loaded!</p> : <Spinner />;
+
         //adding a spinner to checkout...
         //first, create Spinner.js and .css, then add new state "loading: false", then show orderSummary or, if state.loading = true, change orderSummary component with Spinner component
         //in purchaseContinueHandler add setState to true, and change back to false after getting axios response, then set state.purchasing to false, to that the modal closes
-        let orderSummary = <OrderSummary
-            ingredients={this.props.ings}
-            purchaseCanceled={this.purchaseCancelHandler}
-            purchaseContinued={this.purchaseContinueHandler}
-            price={this.props.price} />
-
-        if (this.state.loading) {
-            orderSummary = <Spinner />
-
-        }
-        return (
+            if (this.props.ings) {
+                burger = (
             <React.Fragment>
-                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
-                    {orderSummary}
-                </Modal>
                 <Burger ingredients={this.props.ings} />
                 <BuildControls
                     ingredientAdded={this.props.onIngredientAdded}
@@ -87,20 +78,38 @@ class BurgerBuilder extends Component {
                     purchaseable={this.updatePurchaseState(this.props.ings)}
                     ordered={this.purchaseHandler} />
             </React.Fragment>
-        )
+            )
+
+            orderSummary = <OrderSummary
+            ingredients={this.props.ings}
+            purchaseCanceled={this.purchaseCancelHandler}
+            purchaseContinued={this.purchaseContinueHandler}
+            price={this.props.price} />
+
     }
+    return (
+        <React.Fragment>
+            <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+                {orderSummary}
+            </Modal>
+            {burger}
+        </React.Fragment>
+    )
+}
 }
 
 const mapStateToProps = state => {
     return {
         ings: state.ingredients,
-        price: state.totalPrice
+        price: state.totalPrice,
+        error: state.error
     }
 }
 const mapDispatchToProps = dispatch => {
     return {
-        onIngredientAdded: (ingName) => dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName: ingName}),
-        onIngredientRemoved: (ingName) => dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingName})
+        onIngredientAdded: (ingName) => dispatch(burgerBuilderActions.addIngredient(ingName)),
+        onIngredientRemoved: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName)),
+        onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients())
     }
 }
 

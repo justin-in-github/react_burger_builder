@@ -18,7 +18,7 @@ const buildControls = (props) => {
                 <BuildControl
                     key={control.label}
                     label={control.label}
-                    //we loop over controls which each ahas a type (see above) and pass that type to our
+                    //we loop over controls which each has a type (see above) and pass that type to our
                     //addIngredientHandler where we need the type
                     added={() => props.ingredientAdded(control.type)}
                     removed={() => props.ingredientRemoved(control.type)}

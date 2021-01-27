@@ -1,3 +1,8 @@
+//THIS IS CALLED "ACTION CREATORS"
+//THESE ARE MAINLY USED TO HANDLE ASYNC FNS, SINCE REDUX IS NOT ABLE TO
+//THEY ARE USED IN mapDispatchToProps eg.:
+//onIngredientAdded: (ingName) => dispatch(burgerBuilderActions.addIngredient(ingName))
+
 import axios from "../../axios-orders"
 import * as actionTypes from "./actionTypes"
 
@@ -7,6 +12,7 @@ export const addIngredient = (name) => {
         ingredientName: name
     }
 }
+
 export const removeIngredient = (name) => {
     return {
         type: actionTypes.REMOVE_INGREDIENT,

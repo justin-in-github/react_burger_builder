@@ -105,6 +105,7 @@ class ContactData extends Component {
         const order = {
             ingredients: this.props.ings,
             price: this.props.price,
+            //holds user input
             orderData: formData
         }
         axios.post('/orders.json', order)

@@ -23,10 +23,8 @@ class Checkout extends Component {
                     checkoutContinued={this.checkoutContinuedHandler}
                 />
                 {/* //routing for ContactData formular */}
-                {/* //to be able to pass the ingredients props, we use render instead of component */}
-                {/* //NOTE: DUE TO THIS THE ROUTER METHODS PATH HISTORY ETC ARE NOT AVAILABLE ON CONTACTDATA, SO WE USE PROPS WITH {...PROPS} */}
                 <Route 
-                path={this.props.match.path + "/contact-data"} 
+                path={this.props.match.path} 
                 component={ContactData}/>           
             </div>
 
